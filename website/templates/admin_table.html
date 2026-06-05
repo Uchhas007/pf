@@ -1,0 +1,54 @@
+{% extends 'adminlayout.html' %}
+{% block body %}
+<div class="container-fluid py-4">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }} alert-dismissible fade show">
+          {{ message }}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 style="color:#00ffff;">{{ table_name | capitalize }}</h2>
+    <a href="{{ url_for('admin.add_item', table_name=table_name) }}" class="btn btn-sm" style="background:#ff007f;color:#00ffff;">+ Add New</a>
+  </div>
+
+  <div class="table-responsive">
+    <table class="table table-dark table-bordered table-hover">
+      <thead>
+        <tr>
+          <th>#</th>
+          {% for label in labels %}
+            <th>{{ label }}</th>
+          {% endfor %}
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in items %}
+        <tr>
+          <td>{{ item.sno }}</td>
+          {% for col in item.__table__.columns if col.name != 'sno' %}
+            <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+              {{ getattr(item, col.name) or '-' }}
+            </td>
+          {% endfor %}
+          <td>
+            <a href="{{ url_for('admin.edit_item', table_name=table_name, sno=item.sno) }}" class="btn btn-sm btn-warning me-1">✏️ Edit</a>
+            <form action="{{ url_for('admin.delete_item', table_name=table_name, sno=item.sno) }}" method="POST" style="display:inline;" onsubmit="return confirm('Delete this entry?');">
+              <button type="submit" class="btn btn-sm btn-danger">🗑️ Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% else %}
+        <tr><td colspan="{{ labels|length + 2 }}" class="text-center">No entries found.</td></tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</div>
+{% endblock %}

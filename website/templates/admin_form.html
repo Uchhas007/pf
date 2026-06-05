@@ -1,0 +1,32 @@
+{% extends 'adminlayout.html' %}
+{% block body %}
+<div class="container-fluid py-4" style="max-width:700px;">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <h2 style="color:#00ffff;">{{ action }} — {{ table_name | capitalize }}</h2>
+  <a href="{{ url_for('admin.manage', table_name=table_name) }}" style="color:#ff007f;">← Back to {{ table_name }}</a>
+
+  <form method="POST" class="mt-4">
+    {% for col in columns %}
+    <div class="mb-3">
+      <label style="color:#00ffff;font-size:0.7rem;">{{ col.name | replace('_', ' ') | upper }}</label>
+      <input
+        type="text"
+        name="{{ col.name }}"
+        class="form-control"
+        value="{{ getattr(item, col.name, '') if item else '' }}"
+        style="background:#000;color:#00ffff;border:1px solid #ff007f;border-radius:4px;"
+      />
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn w-100 mt-2" style="background:#ff007f;color:#000;">{{ action }}</button>
+  </form>
+</div>
+{% endblock %}

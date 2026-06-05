@@ -6,32 +6,21 @@
       name="viewport"
       content="width=device-width, initial-scale=1, shrink-to-fit=no"
     />
-    <meta name="description" content="Admin Login Page" />
-    <meta name="author" content="Your Name" />
-    <link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" />
-
     <title>Uchhas Saha | Admin Login</title>
-
-    <!-- Bootstrap 5.0 CSS (Modern version) -->
     <link
       href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css"
       rel="stylesheet"
     />
-
-    <!-- Google Fonts for slick typography -->
     <link
       href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500&family=Quicksand:wght@500&display=swap"
       rel="stylesheet"
     />
-
-    <!-- Custom Styles -->
     <style>
       body {
         background: linear-gradient(to right, #6a11cb, #2575fc);
         font-family: "Quicksand", sans-serif;
         height: 100vh;
       }
-
       .form-signin {
         max-width: 400px;
         margin: auto;
@@ -40,34 +29,23 @@
         border-radius: 10px;
         box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
       }
-
       .form-signin img {
         width: 80px;
         height: 80px;
         margin-bottom: 1.5rem;
+        border-radius: 50%;
       }
-
-      .form-signin h1 {
-        font-size: 2rem;
-        font-weight: 600;
-        color: #333;
-        margin-bottom: 2rem;
-      }
-
       .form-control {
         border-radius: 30px;
-        box-shadow: none;
         border: 1px solid #ddd;
         margin-bottom: 1rem;
         padding: 1rem;
         font-size: 1rem;
       }
-
       .form-control:focus {
         border-color: #2575fc;
         box-shadow: 0 0 5px rgba(37, 117, 252, 0.6);
       }
-
       .btn-primary {
         background-color: #2575fc;
         border-color: #2575fc;
@@ -76,71 +54,54 @@
         font-size: 1.1rem;
         font-weight: 600;
       }
-
       .btn-primary:hover {
         background-color: #1a62d8;
         border-color: #1a62d8;
       }
-
-      .checkbox {
-        margin-bottom: 1rem;
-      }
-
-      .checkbox input {
-        margin-right: 5px;
-      }
-
-      .text-muted {
-        font-size: 0.8rem;
-        color: #888;
-      }
-
-      .footer-text {
-        text-align: center;
-        margin-top: 2rem;
-      }
     </style>
   </head>
-
   <body class="d-flex justify-content-center align-items-center">
+    {% with messages = get_flashed_messages(with_categories=true) %} {% if
+    messages %}
+    <div style="position: fixed; top: 20px; width: 100%; z-index: 999">
+      {% for category, message in messages %}
+      <div
+        class="alert alert-{{ category }} text-center mx-auto"
+        style="max-width: 400px"
+      >
+        {{ message }}
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %} {% endwith %}
     <form
       class="form-signin"
       action="{{ url_for('admin.login') }}"
       method="POST"
     >
-      <img
-        class="mb-4"
-        src="{{ url_for('static', filename='images/login_img.jpg') }}"
-        alt="Logo"
+      <div class="text-center">
+        <img
+          src="{{ url_for('static', filename='images/bg_1.png') }}"
+          alt="Logo"
+        />
+        <h1 class="h3 mb-4 font-weight-normal">Admin Login</h1>
+      </div>
+      <input
+        type="email"
+        name="username"
+        class="form-control"
+        placeholder="Email address"
+        required
+        autofocus
       />
-      <h1 class="h3 mb-3 font-weight-normal text-center">Admin Login</h1>
-
-      <div class="form-floating mb-3">
-        <input
-          type="email"
-          id="inputEmail"
-          name="username"
-          class="form-control"
-          placeholder="Email address"
-          required
-          autofocus
-        />
-        <label for="inputEmail">Email address</label>
-      </div>
-
-      <div class="form-floating mb-4">
-        <input
-          type="password"
-          id="inputPassword"
-          name="password"
-          class="form-control"
-          placeholder="Password"
-          required
-        />
-        <label for="inputPassword">Password</label>
-      </div>
-
-      <button class="btn btn-lg btn-primary btn-block w-100" type="submit">
+      <input
+        type="password"
+        name="password"
+        class="form-control"
+        placeholder="Password"
+        required
+      />
+      <button class="btn btn-lg btn-primary btn-block w-100 mt-2" type="submit">
         Sign in
       </button>
     </form>

@@ -1,0 +1,43 @@
+{% extends 'adminlayout.html' %}
+{% block body %}
+<div class="container-fluid py-4" style="max-width:700px;">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      {% for category, message in messages %}
+        <div class="alert alert-{{ category }}">{{ message }}</div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <h2 style="color:#00ffff;">👤 Edit Profile</h2>
+
+  <form method="POST" class="mt-4">
+    {% set fields = [
+      ('fname','First Name'), ('lname','Last Name'), ('profession','Profession'),
+      ('phone','Phone'), ('email','Email'), ('born_day','Born Day'),
+      ('born_month','Born Month'), ('born_year','Born Year'), ('sex','Sex'),
+      ('nationality','Nationality'), ('place','Street'), ('city','City'),
+      ('state','Area/State'), ('postal_code','Postal Code'), ('country','Country'),
+      ('planet','Unit/Planet'), ('facebook','Facebook URL'), ('twitter','Twitter URL'),
+      ('instagram','Instagram URL'), ('linkedin','LinkedIn URL'), ('github','GitHub URL'),
+      ('no_of_projects','No. of Projects'), ('awards','Awards'),
+      ('customers','Customers'), ('coffee','Coffee'), ('img_path','Image Path'),
+      ('cv_path','CV File Path'),
+    ] %}
+    {% for field, label in fields %}
+    <div class="mb-3">
+      <label style="color:#00ffff;font-size:0.65rem;">{{ label }}</label>
+      <input
+        type="text"
+        name="{{ field }}"
+        class="form-control"
+        value="{{ getattr(profile, field, '') or '' }}"
+        style="background:#000;color:#00ffff;border:1px solid #ff007f;border-radius:4px;"
+      />
+    </div>
+    {% endfor %}
+    <button type="submit" class="btn w-100 mt-2" style="background:#ff007f;color:#000;">Save Changes</button>
+  </form>
+</div>
+{% endblock %}

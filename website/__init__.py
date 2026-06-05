@@ -236,7 +236,7 @@ def _seed(db):
             planet=os.environ.get("ADDR_UNIT", "C-137"),
             img_path=os.environ.get("IMG_PATH", "images/bg_1.png"),
             profession=os.environ.get("PROF", "Undergrad CS student"),
-            email=os.environ.get("ADMIN_EMAIL", "admin@example.com"),
+            email=os.environ.get("EMAIL", "admin@example.com"),
             username=os.environ.get("USERNAME", "admin"),
             password=os.environ.get("ADMIN_PASS", "changeme"),
             phone=os.environ.get("PHONE", "+880 1715 123456"),
