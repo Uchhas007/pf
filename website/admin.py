@@ -30,7 +30,6 @@ MODEL_MAP = {
     "cv": CV,
 }
 
-# Human-readable labels for each model's columns
 COLUMN_LABELS = {
     "resume": ["Date", "Degree / Title", "Institute / Organisation", "Description"],
     "certificates": ["Date", "Certificate Name", "Platform", "Description", "URL"],
@@ -44,11 +43,20 @@ COLUMN_LABELS = {
 }
 
 
+# ── Safe int helper ───────────────────────────────────────────────────────────
+def safe_int(value, fallback=0):
+    """Convert value to int safely — returns fallback on empty string or None."""
+    try:
+        return int(value) if value not in (None, "", " ") else fallback
+    except (ValueError, TypeError):
+        return fallback
+
+
 # ── Auth decorator ────────────────────────────────────────────────────────────
 def login_required(f):
     @wraps(f)
     def decorated(*args, **kwargs):
-        if session.get("admin_logged_in") != True:
+        if session.get("admin_logged_in") is not True:
             flash("Please log in to access the admin panel.", "warning")
             return redirect(url_for("admin.login"))
         return f(*args, **kwargs)
@@ -129,33 +137,24 @@ def profile():
     user = UserProfile.query.first()
 
     if request.method == "POST":
-        user.fname = request.form.get("fname", user.fname)
-        user.lname = request.form.get("lname", user.lname)
-        user.profession = request.form.get("profession", user.profession)
-        user.phone = request.form.get("phone", user.phone)
-        user.email = request.form.get("email", user.email)
-        user.born_day = request.form.get("born_day", user.born_day)
-        user.born_month = request.form.get("born_month", user.born_month)
-        user.born_year = request.form.get("born_year", user.born_year)
-        user.sex = request.form.get("sex", user.sex)
-        user.nationality = request.form.get("nationality", user.nationality)
-        user.place = request.form.get("place", user.place)
-        user.city = request.form.get("city", user.city)
-        user.state = request.form.get("state", user.state)
-        user.postal_code = request.form.get("postal_code", user.postal_code)
-        user.country = request.form.get("country", user.country)
-        user.planet = request.form.get("planet", user.planet)
-        user.facebook = request.form.get("facebook", user.facebook)
-        user.twitter = request.form.get("twitter", user.twitter)
-        user.instagram = request.form.get("instagram", user.instagram)
-        user.linkedin = request.form.get("linkedin", user.linkedin)
-        user.github = request.form.get("github", user.github)
-        user.no_of_projects = int(request.form.get("no_of_projects", user.no_of_projects or 0))
-        user.awards = int(request.form.get("awards", user.awards or 0))
-        user.customers = int(request.form.get("customers", user.customers or 0))
-        user.coffee = int(request.form.get("coffee", user.coffee or 0))
-        user.img_path = request.form.get("img_path", user.img_path)
-        user.cv_path = request.form.get("cv_path", user.cv_path)
+        # String fields — only update if form submitted a non-empty value
+        str_fields = [
+            "fname", "lname", "profession", "phone", "email",
+            "born_day", "born_month", "born_year", "sex", "nationality",
+            "place", "city", "state", "postal_code", "country", "planet",
+            "facebook", "twitter", "instagram", "linkedin", "github",
+            "img_path", "cv_path",
+        ]
+        for field in str_fields:
+            val = request.form.get(field, "").strip()
+            if val:
+                setattr(user, field, val)
+
+        # Int fields — safe conversion, keep existing value if empty
+        user.no_of_projects = safe_int(request.form.get("no_of_projects"), user.no_of_projects or 0)
+        user.awards         = safe_int(request.form.get("awards"),         user.awards or 0)
+        user.customers      = safe_int(request.form.get("customers"),      user.customers or 0)
+        user.coffee         = safe_int(request.form.get("coffee"),         user.coffee or 0)
 
         db.session.commit()
         flash("Profile updated successfully!", "success")
@@ -266,7 +265,7 @@ def delete_item(table_name, sno):
     return redirect(url_for("admin.manage", table_name=table_name))
 
 
-# ── Contacts detail view ──────────────────────────────────────────────────────
+# ── Contact detail view ───────────────────────────────────────────────────────
 
 @admin.route("/admin/contact/<int:sno>")
 @login_required
