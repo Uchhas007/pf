@@ -106,7 +106,7 @@ def logout():
 
 # ── Dashboard ─────────────────────────────────────────────────────────────────
 
-@admin.route("/admin")
+@admin.route("/admin", strict_slashes=False)
 @login_required
 def dashboard():
     ctx = _ctx()
